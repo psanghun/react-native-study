@@ -1,0 +1,3 @@
+rootProject.name = 'RNPhoto'
+
+include ':app'
