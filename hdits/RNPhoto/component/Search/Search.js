@@ -2,8 +2,18 @@ import React, { Component } from 'react';
 import { Button, View, Text, TextInput, Alert } from 'react-native';
 
 class Search extends Component {
+  searchword = '';
+
+  constructor(props) {
+    super(props);
+  }
+
   handlePress = () => {
-    Alert.alert('ReactNative Photo', 'API가 검색을 지원하지 않네요.');
+    Alert.alert(this.searchword, 'API가 검색을 지원하지 않네요.');
+  };
+
+  textChange = text => {
+    this.searchword = text;
   };
 
   render() {
@@ -29,6 +39,9 @@ class Search extends Component {
           <TextInput
             placeholder="검색어"
             style={{ flex: 2, borderWidth: 0.4, padding: 5, height: 30 }}
+            onChangeText={text => {
+              this.textChange(text);
+            }}
           />
           <Button
             style={{ flex: 1 }}
