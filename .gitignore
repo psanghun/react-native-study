@@ -34,6 +34,7 @@ local.properties
 #
 node_modules/
 hdits/RNPhto/node_modules/
+hdits/RNtube/node_modules/
 npm-debug.log
 yarn-error.log
 
