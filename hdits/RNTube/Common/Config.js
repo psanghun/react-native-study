@@ -10,7 +10,7 @@ export default class Config {
    */
   getSearchListURL = searchword => {
     const url =
-      'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=' +
+      'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&type=video&q=' +
       searchword +
       '&key=' +
       this.API_KEY;

@@ -17,8 +17,7 @@ export default class Search extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchword: '',
-      searchResult: {}
+      searchword: ''
     };
   }
 
@@ -27,7 +26,7 @@ export default class Search extends Component {
     fetch(_URL)
       .then(response => response.json())
       .then(responseJSON => {
-        this.props.onSearch(responseJSON);
+        this.props.onSearch(this.state.searchword, responseJSON);
       })
       .catch(err => {
         alert(err);
@@ -79,7 +78,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 30
+    marginTop: 35
   },
   inputBox: {
     borderWidth: 1,

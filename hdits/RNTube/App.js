@@ -1,28 +1,75 @@
+/* eslint-disable no-undef */
 import React, { Component } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View, YellowBox } from 'react-native';
 import Search from './Components/Search';
 import VideoList from './Components/VideoList';
+import VideoDetail from './Components/VideoDetail';
+import Config from './Common/Config';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu'
-});
+const config = new Config();
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchResult: {}
+      searchItems: [],
+      pageToken: undefined,
+      searchword: '',
+      isNewSearch: true
     };
+
+    YellowBox.ignoreWarnings(['Task orphaned']);
   }
 
   render() {
-    onSearch = resultJSON => {
+    onSearch = (searchword, resultJSON) => {
       this.setState({
         ...this.state,
-        searchResult: resultJSON
+        pageToken: resultJSON.nextPageToken,
+        searchItems: resultJSON.items,
+        searchword: searchword,
+        isNewSearch: true
+      });
+    };
+
+    searchEnd = () => {
+      this.setState({
+        ...this.state,
+        isNewSearch: false
+      });
+    };
+
+    doMoreSearch = () => {
+      let _URL = config.getSearchListURL(this.state.searchword);
+      if (this.state.pageToken)
+        _URL = _URL + '&pageToken=' + this.state.pageToken;
+
+      fetch(_URL)
+        .then(response => response.json())
+        .then(responseJSON => {
+          this.setState({
+            ...this.state,
+            isNewSearch: false,
+            searchItems: [...this.state.searchItems, ...responseJSON.items],
+            pageToken: responseJSON.nextPageToken
+          });
+        })
+        .catch(err => {
+          alert(err);
+        });
+    };
+
+    setVideoId = videoId => {
+      this.setState({
+        ...this.state,
+        videoId: videoId
+      });
+    };
+
+    closeDetail = () => {
+      this.setState({
+        ...this.state,
+        videoId: undefined
       });
     };
 
@@ -31,12 +78,28 @@ export default class App extends Component {
         <Search onSearch={onSearch} style={styles.search} />
         <VideoList
           style={styles.videoList}
-          items={this.state.searchResult.items}
+          items={this.state.searchItems}
+          isNewSearch={this.state.isNewSearch}
+          searchEnd={searchEnd}
+          doMoreSearch={doMoreSearch}
+          setVideoId={setVideoId}
+        />
+        <ViewDetail
+          videoId={this.state.videoId}
+          closeDetail={this.closeDetail}
         />
       </View>
     );
   }
 }
+
+const ViewDetail = ({ videoId }) => {
+  if (videoId) {
+    return <VideoDetail videoId={videoId} visible={true} />;
+  } else {
+    return <></>;
+  }
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -50,8 +113,10 @@ const styles = StyleSheet.create({
     margin: 10
   },
   videoList: {
+    display: 'flex',
     flex: 8,
-    fontSize: 20,
+    flexDirection: 'row',
+    fontSize: 10,
     marginLeft: 10,
     marginRight: 10,
     backgroundColor: 'white'
