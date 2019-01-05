@@ -123,11 +123,12 @@ const styles = StyleSheet.create({
   },
   videoList: {
     display: 'flex',
-    flex: 8,
+    flex: 9,
     flexDirection: 'row',
-    fontSize: 10,
+    fontSize: 15,
     marginLeft: 10,
     marginRight: 10,
+    marginTop: 20,
     backgroundColor: 'white'
   }
 });
