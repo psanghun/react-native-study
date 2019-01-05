@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Modal, WebView, Button } from 'react-native';
+import { View, Modal, WebView, Button } from 'react-native';
 
 export default class VideoDetail extends Component {
   getDetailUrl = videoId => {
@@ -8,20 +8,24 @@ export default class VideoDetail extends Component {
     return url;
   };
 
-  checkVisible = () => {
-    if (this.props.videoId) {
-      return true;
-    } else {
-      return false;
-    }
+  closeWin = () => {
+    this.props.closeDetail();
   };
+
+  handleClose = () => {
+    this.props.closeDetail();
+  };
+
   render() {
     return (
       <View>
-        <Modal animationType="slide" visible={this.checkVisible()}>
-          <Text>{this.props.videoId}</Text>
+        <Modal
+          animationType="slide"
+          visible={this.props.detailOpen}
+          onRequestClose={this.handleClose}
+        >
           <WebView source={{ uri: this.getDetailUrl(this.props.videoId) }} />
-          <Button title="닫기" onPress={this.props.closeDetail()} />
+          <Button title="닫기" onPress={this.closeWin} />
         </Modal>
       </View>
     );

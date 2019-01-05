@@ -15,7 +15,8 @@ export default class App extends Component {
       searchItems: [],
       pageToken: undefined,
       searchword: '',
-      isNewSearch: true
+      isNewSearch: true,
+      detailOpen: false
     };
 
     YellowBox.ignoreWarnings(['Task orphaned']);
@@ -62,7 +63,8 @@ export default class App extends Component {
     setVideoId = videoId => {
       this.setState({
         ...this.state,
-        videoId: videoId
+        videoId: videoId,
+        detailOpen: true
       });
     };
 
@@ -86,16 +88,23 @@ export default class App extends Component {
         />
         <ViewDetail
           videoId={this.state.videoId}
-          closeDetail={this.closeDetail}
+          closeDetail={closeDetail}
+          detailOpen={this.state.detailOpen}
         />
       </View>
     );
   }
 }
 
-const ViewDetail = ({ videoId }) => {
+const ViewDetail = ({ videoId, closeDetail, detailOpen }) => {
   if (videoId) {
-    return <VideoDetail videoId={videoId} visible={true} />;
+    return (
+      <VideoDetail
+        videoId={videoId}
+        detailOpen={detailOpen}
+        closeDetail={closeDetail}
+      />
+    );
   } else {
     return <></>;
   }
