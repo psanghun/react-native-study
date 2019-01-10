@@ -3,9 +3,6 @@
  *
  */
 export default class Config {
-
-  require('dotenv').config();
-
   API_KEY = process.env.API_KEY;
 
   /**
