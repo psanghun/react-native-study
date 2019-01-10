@@ -7,9 +7,6 @@ import {
   StyleSheet
 } from 'react-native';
 import Config from '../../Common/Config';
-import c from 'dotenv';
-
-c.config();
 
 const config = new Config();
 

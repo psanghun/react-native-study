@@ -3,7 +3,7 @@
  *
  */
 export default class Config {
-  API_KEY = process.env.API_KEY;
+  API_KEY = process.env.REACT_APP_API_KEY;
 
   /**
    * 검색 URL 조립
