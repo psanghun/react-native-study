@@ -3,7 +3,10 @@
  *
  */
 export default class Config {
-  API_KEY = process.env.RNTUBE_API_KEY;
+
+  require('dotenv').config();
+
+  API_KEY = process.env.API_KEY;
 
   /**
    * 검색 URL 조립

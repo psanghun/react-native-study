@@ -23,6 +23,7 @@ export default class Search extends Component {
 
   searchVideos = () => {
     const _URL = config.getSearchListURL(this.state.searchword);
+    alert(_URL);
     fetch(_URL)
       .then(response => response.json())
       .then(responseJSON => {
