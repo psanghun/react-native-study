@@ -1,9 +1,12 @@
+import React, { Component } from 'react';
+import { Text } from 'react-native';
+import rnconfig from 'react-native-config';
 /**
  * 설정 정보 CLASS
  *
  */
-export default class Config {
-  API_KEY = process.env.REACT_APP_API_KEY;
+class Config extends Component {
+  API_KEY = rnconfig.REACT_APP_API_KEY;
 
   /**
    * 검색 URL 조립
@@ -17,4 +20,10 @@ export default class Config {
 
     return url;
   };
+
+  render() {
+    return <Text>{this.API_KEY}</Text>;
+  }
 }
+
+export default Config;
