@@ -3,7 +3,7 @@
  *
  */
 export default class Config {
-  API_KEY = 'AIzaSyDlOPb34gl1P87Ly9oFlrV3K0kjQ96OpFs';
+  API_KEY = process.env.RNTUBE_API_KEY;
 
   /**
    * 검색 URL 조립
