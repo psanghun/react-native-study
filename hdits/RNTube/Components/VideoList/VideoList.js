@@ -48,6 +48,7 @@ export default class VideoList extends Component {
           marginTop: 20
         }}
         numColumns={2}
+        columnWrapperStyle={{ flex: 1, justifyContent: 'space-around' }}
         onEndReached={this.handleEndRiched}
         onEndReachedThreshold={2}
         bounces={false}
@@ -76,7 +77,7 @@ const VideoCard = ({ title, imgSource, videoId, setVideoId }) => {
         <Image source={{ uri: imgSource }} style={{ width: 170, height: 80 }} />
         <Text
           numberOfLines={3}
-          style={{ fontSize: 12, padding: 5, paddingBottom: 15 }}
+          style={{ fontSize: 15, padding: 5, paddingBottom: 15 }}
         >
           {title}
         </Text>

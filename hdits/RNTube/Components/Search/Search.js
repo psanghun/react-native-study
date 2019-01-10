@@ -54,12 +54,13 @@ export default class Search extends Component {
               style={{
                 backgroundColor: 'red',
                 color: 'white',
-                height: 30,
+                height: 50,
                 width: 50,
                 textAlign: 'center',
                 textAlignVertical: 'center',
-                lineHeight: 30,
+                lineHeight: 15,
                 fontWeight: '600',
+                fontSize: 15,
                 marginLeft: 10
               }}
             >
@@ -83,11 +84,12 @@ const styles = StyleSheet.create({
   inputBox: {
     borderWidth: 1,
     borderColor: '#FF4500',
-    height: 30,
+    height: 50,
+    fontSize: 15,
     width: 200
   },
   btn: {
-    height: 30,
+    height: 50,
     width: 40
   }
 });
