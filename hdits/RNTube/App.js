@@ -43,10 +43,6 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     backgroundColor: '#FFA500'
   },
-  search: {
-    flex: 1,
-    margin: 10
-  },
   videoList: {
     display: 'flex',
     flex: 9,

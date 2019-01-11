@@ -63,7 +63,7 @@ export default class Search extends Component {
                 width: 50,
                 textAlign: 'center',
                 textAlignVertical: 'center',
-                lineHeight: 15,
+                lineHeight: 50,
                 fontWeight: '600',
                 fontSize: 15,
                 marginLeft: 10
@@ -84,7 +84,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 35
+    marginTop: 45,
+    marginBottom: 10
   },
   inputBox: {
     borderWidth: 1,
