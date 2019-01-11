@@ -21,7 +21,7 @@ export default class VideoDetail extends Component {
       <View>
         <Modal
           animationType="slide"
-          visible={this.props.detailOpen}
+          visible={true}
           onRequestClose={this.handleClose}
         >
           <WebView source={{ uri: this.getDetailUrl(this.props.videoId) }} />

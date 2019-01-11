@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { FlatList, Text, Image, TouchableHighlight } from 'react-native';
+import Config from '../../Common/Config';
+
+const config = new Config();
 
 /**
  * 검색 결과 리스트
@@ -12,15 +15,32 @@ export default class VideoList extends Component {
   UNSAFE_componentWillReceiveProps() {
     if (this.props.isNewSearch) {
       this.flatListRef.scrollToOffset({ animated: false, offset: 0 });
-      this.props.searchEnd();
     }
   }
 
   handleEndRiched = () => {
     if (!this.onEndReachedCalledDuringMomentum) {
-      this.props.doMoreSearch();
+      this.doMoreSearch();
       this.onEndReachedCalledDuringMomentum = true;
     }
+  };
+
+  doMoreSearch = () => {
+    let _URL = config.getSearchListURL(this.props.searchword);
+    if (this.props.nextPageToken)
+      _URL = _URL + '&pageToken=' + this.props.nextPageToken;
+
+    fetch(_URL)
+      .then(response => response.json())
+      .then(responseJSON => {
+        this.props.addVideoList({
+          videoList: responseJSON.items,
+          nextPageToken: responseJSON.nextPageToken
+        });
+      })
+      .catch(err => {
+        alert(err);
+      });
   };
 
   render() {
@@ -29,7 +49,7 @@ export default class VideoList extends Component {
         ref={ref => {
           this.flatListRef = ref;
         }}
-        data={this.props.items}
+        data={this.props.searchItems}
         renderItem={({ item }) => {
           if (item.snippet)
             return (
@@ -37,8 +57,8 @@ export default class VideoList extends Component {
                 title={item.snippet.title}
                 imgSource={item.snippet.thumbnails.medium.url}
                 videoId={item.id.videoId}
-                doMoreSearch={this.props.doMoreSearch}
-                setVideoId={this.props.setVideoId}
+                doMoreSearch={this.doMoreSearch}
+                setVideoId={this.props.setVideoID}
               />
             );
         }}

@@ -22,11 +22,16 @@ export default class Search extends Component {
   }
 
   searchVideos = () => {
+    const { setVideoList } = this.props;
     const _URL = config.getSearchListURL(this.state.searchword);
     fetch(_URL)
       .then(response => response.json())
       .then(responseJSON => {
-        this.props.onSearch(this.state.searchword, responseJSON);
+        setVideoList({
+          videoList: responseJSON.items,
+          nextPageToken: responseJSON.nextPageToken,
+          searchword: this.state.searchword
+        });
       })
       .catch(err => {
         alert(err);

@@ -1,110 +1,36 @@
 /* eslint-disable no-undef */
 import React, { Component } from 'react';
 import { StyleSheet, View, YellowBox } from 'react-native';
-import Search from './Components/Search';
-import VideoList from './Components/VideoList';
 import VideoDetail from './Components/VideoDetail';
-import Config from './Common/Config';
+import SearchContainer from './Container/SearchContainer';
+import VideoListContainer from './Container/VideoListContainer';
+import { connect } from 'react-redux';
+import * as actions from './Reducers/YoutubeReducer';
 
-const config = new Config();
-
-export default class App extends Component {
+class AppComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      searchItems: [],
-      pageToken: undefined,
-      searchword: '',
-      isNewSearch: true,
-      detailOpen: false
-    };
-
     YellowBox.ignoreWarnings(['Task orphaned']);
   }
 
   render() {
-    onSearch = (searchword, resultJSON) => {
-      this.setState({
-        ...this.state,
-        pageToken: resultJSON.nextPageToken,
-        searchItems: resultJSON.items,
-        searchword: searchword,
-        isNewSearch: true
-      });
-    };
-
-    searchEnd = () => {
-      this.setState({
-        ...this.state,
-        isNewSearch: false
-      });
-    };
-
-    doMoreSearch = () => {
-      let _URL = config.getSearchListURL(this.state.searchword);
-      if (this.state.pageToken)
-        _URL = _URL + '&pageToken=' + this.state.pageToken;
-
-      fetch(_URL)
-        .then(response => response.json())
-        .then(responseJSON => {
-          this.setState({
-            ...this.state,
-            isNewSearch: false,
-            searchItems: [...this.state.searchItems, ...responseJSON.items],
-            pageToken: responseJSON.nextPageToken
-          });
-        })
-        .catch(err => {
-          alert(err);
-        });
-    };
-
-    setVideoId = videoId => {
-      this.setState({
-        ...this.state,
-        videoId: videoId,
-        detailOpen: true
-      });
-    };
-
     closeDetail = () => {
-      this.setState({
-        ...this.state,
-        videoId: undefined
-      });
+      this.props.clearVideoID();
     };
 
     return (
       <View style={styles.container}>
-        <Search onSearch={onSearch} style={styles.search} />
-        <VideoList
-          style={styles.videoList}
-          items={this.state.searchItems}
-          isNewSearch={this.state.isNewSearch}
-          searchEnd={searchEnd}
-          doMoreSearch={doMoreSearch}
-          setVideoId={setVideoId}
-        />
-        <ViewDetail
-          videoId={this.state.videoId}
-          closeDetail={closeDetail}
-          detailOpen={this.state.detailOpen}
-        />
+        <SearchContainer />
+        <VideoListContainer style={styles.videoList} />
+        <ViewDetail videoId={this.props.videoID} closeDetail={closeDetail} />
       </View>
     );
   }
 }
 
-const ViewDetail = ({ videoId, closeDetail, detailOpen }) => {
+const ViewDetail = ({ videoId, closeDetail }) => {
   if (videoId) {
-    return (
-      <VideoDetail
-        videoId={videoId}
-        detailOpen={detailOpen}
-        closeDetail={closeDetail}
-      />
-    );
+    return <VideoDetail videoId={videoId.videoID} closeDetail={closeDetail} />;
   } else {
     return <></>;
   }
@@ -132,3 +58,24 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   }
 });
+
+// store 안의 state 값을 props 로 연결해줍니다.
+const mapStateToProps = state => ({
+  videoID: state.videoID
+});
+
+const mapDispatchToProps = dispatch => ({
+  setVideoID: videoID => {
+    dispatch(actions.setVideoID(videoID));
+  },
+  clearVideoID: () => {
+    dispatch(actions.clearVideoID());
+  }
+});
+
+const App = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AppComponent);
+
+export default App;
