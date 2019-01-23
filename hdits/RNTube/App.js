@@ -4,107 +4,35 @@ import { StyleSheet, View, YellowBox } from 'react-native';
 import Search from './Components/Search';
 import VideoList from './Components/VideoList';
 import VideoDetail from './Components/VideoDetail';
-import Config from './Common/Config';
+import { Provider, observer } from 'mobx-react';
+import Store from './mobx/Store';
 
-const config = new Config();
+const tubeStore = new Store();
 
+@observer
 export default class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      searchItems: [],
-      pageToken: undefined,
-      searchword: '',
-      isNewSearch: true,
-      detailOpen: false
-    };
 
     YellowBox.ignoreWarnings(['Task orphaned']);
   }
 
   render() {
-    onSearch = (searchword, resultJSON) => {
-      this.setState({
-        ...this.state,
-        pageToken: resultJSON.nextPageToken,
-        searchItems: resultJSON.items,
-        searchword: searchword,
-        isNewSearch: true
-      });
-    };
-
-    searchEnd = () => {
-      this.setState({
-        ...this.state,
-        isNewSearch: false
-      });
-    };
-
-    doMoreSearch = () => {
-      let _URL = config.getSearchListURL(this.state.searchword);
-      if (this.state.pageToken)
-        _URL = _URL + '&pageToken=' + this.state.pageToken;
-
-      fetch(_URL)
-        .then(response => response.json())
-        .then(responseJSON => {
-          this.setState({
-            ...this.state,
-            isNewSearch: false,
-            searchItems: [...this.state.searchItems, ...responseJSON.items],
-            pageToken: responseJSON.nextPageToken
-          });
-        })
-        .catch(err => {
-          alert(err);
-        });
-    };
-
-    setVideoId = videoId => {
-      this.setState({
-        ...this.state,
-        videoId: videoId,
-        detailOpen: true
-      });
-    };
-
-    closeDetail = () => {
-      this.setState({
-        ...this.state,
-        videoId: undefined
-      });
-    };
-
     return (
-      <View style={styles.container}>
-        <Search onSearch={onSearch} style={styles.search} />
-        <VideoList
-          style={styles.videoList}
-          items={this.state.searchItems}
-          isNewSearch={this.state.isNewSearch}
-          searchEnd={searchEnd}
-          doMoreSearch={doMoreSearch}
-          setVideoId={setVideoId}
-        />
-        <ViewDetail
-          videoId={this.state.videoId}
-          closeDetail={closeDetail}
-          detailOpen={this.state.detailOpen}
-        />
-      </View>
+      <Provider mobxStore={tubeStore}>
+        <View style={styles.container}>
+          <Search style={styles.search} />
+          <VideoList style={styles.videoList} />
+          <ViewDetail />
+        </View>
+      </Provider>
     );
   }
 }
 
-const ViewDetail = ({ videoId, closeDetail, detailOpen }) => {
-  if (videoId) {
-    return (
-      <VideoDetail
-        videoId={videoId}
-        detailOpen={detailOpen}
-        closeDetail={closeDetail}
-      />
-    );
+const ViewDetail = () => {
+  if (tubeStore.isDetailOpen) {
+    return <VideoDetail videoId={tubeStore.videoID} tubeStore={tubeStore} />;
   } else {
     return <></>;
   }

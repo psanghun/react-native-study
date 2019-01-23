@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { Text } from 'react-native';
 import rnconfig from 'react-native-config';
+
 /**
  * 설정 정보 CLASS
  *
  */
 class Config extends Component {
   API_KEY = rnconfig.REACT_APP_API_KEY;
+
+  // API_KEY = 'AIzaSyDlOPb34gl1P87Ly9oFlrV3K0kjQ96OpFs';
 
   /**
    * 검색 URL 조립

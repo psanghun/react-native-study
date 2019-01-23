@@ -7,26 +7,30 @@ import {
   StyleSheet
 } from 'react-native';
 import Config from '../../Common/Config';
+import { inject, observer } from 'mobx-react';
 
 const config = new Config();
 
 /**
  * 검색 영역
  */
+@inject('mobxStore')
+@observer
 export default class Search extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      searchword: ''
-    };
   }
 
   searchVideos = () => {
-    const _URL = config.getSearchListURL(this.state.searchword);
+    const _URL = config.getSearchListURL(this.props.mobxStore.searchword);
     fetch(_URL)
       .then(response => response.json())
       .then(responseJSON => {
-        this.props.onSearch(this.state.searchword, responseJSON);
+        this.props.mobxStore.setVideoList(
+          responseJSON.items,
+          responseJSON.nextPageToken,
+          this.props.mobxStore.searchword
+        );
       })
       .catch(err => {
         alert(err);
@@ -39,9 +43,9 @@ export default class Search extends Component {
         <TextInput
           placeholder="검색어를 입력하세요"
           style={styles.inputBox}
-          value={this.state.searchword}
+          value={this.props.mobxStore.searchword}
           onChangeText={text => {
-            this.setState({ ...this.state, searchword: text });
+            this.props.mobxStore.setSearchword(text);
           }}
           autoFocus={true}
           autoCapitalize="none"

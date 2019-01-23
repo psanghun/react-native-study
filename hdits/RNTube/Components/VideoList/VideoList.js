@@ -1,26 +1,50 @@
 import React, { Component } from 'react';
 import { FlatList, Text, Image, TouchableHighlight } from 'react-native';
+import { inject, observer } from 'mobx-react';
+import Config from '../../Common/Config';
+
+const config = new Config();
 
 /**
  * 검색 결과 리스트
  */
+@inject('mobxStore')
+@observer
 export default class VideoList extends Component {
   constructor(props) {
     super(props);
   }
 
-  UNSAFE_componentWillReceiveProps() {
-    if (this.props.isNewSearch) {
+  componentDidUpdate() {
+    if (this.props.mobxStore.isNewSearch && this.flatListRef) {
       this.flatListRef.scrollToOffset({ animated: false, offset: 0 });
-      this.props.searchEnd();
+      this.props.mobxStore.searchEnd();
     }
   }
 
   handleEndRiched = () => {
     if (!this.onEndReachedCalledDuringMomentum) {
-      this.props.doMoreSearch();
+      this.doMoreSearch();
       this.onEndReachedCalledDuringMomentum = true;
     }
+  };
+
+  doMoreSearch = () => {
+    let _URL = config.getSearchListURL(this.props.mobxStore.searchword);
+    if (this.props.mobxStore.nextPageToken)
+      _URL = _URL + '&pageToken=' + this.props.mobxStore.nextPageToken;
+
+    fetch(_URL)
+      .then(response => response.json())
+      .then(responseJSON => {
+        this.props.mobxStore.addVideoList(
+          responseJSON.items,
+          responseJSON.nextPageToken
+        );
+      })
+      .catch(err => {
+        alert(err);
+      });
   };
 
   render() {
@@ -29,7 +53,7 @@ export default class VideoList extends Component {
         ref={ref => {
           this.flatListRef = ref;
         }}
-        data={this.props.items}
+        data={this.props.mobxStore.searchItems}
         renderItem={({ item }) => {
           if (item.snippet)
             return (
@@ -38,7 +62,7 @@ export default class VideoList extends Component {
                 imgSource={item.snippet.thumbnails.medium.url}
                 videoId={item.id.videoId}
                 doMoreSearch={this.props.doMoreSearch}
-                setVideoId={this.props.setVideoId}
+                setVideoID={this.props.mobxStore.setVideoID}
               />
             );
         }}
@@ -65,10 +89,11 @@ export default class VideoList extends Component {
  * @param {제목} title
  * @param {썸네일} imgSource
  * @param {영상ID} videoId
+ * @param {상세화면호출 함수} setVideoID
  */
-const VideoCard = ({ title, imgSource, videoId, setVideoId }) => {
+const VideoCard = ({ title, imgSource, videoId, setVideoID }) => {
   const viewDetail = () => {
-    if (videoId) setVideoId(videoId);
+    if (videoId) setVideoID(videoId);
   };
 
   return (
