@@ -11,12 +11,15 @@ MobX 및 Decorator 적용 문제
     
     
 1. babelrc
+<pre><code>
 {
   "presets": ["module:metro-react-native-babel-preset", "@babel/preset-flow"],
   "plugins": [["@babel/plugin-proposal-decorators", { "legacy": true }]]
 }
+</code></pre>
 
 2. package.json
+<pre><code>
 {
   "name": "mobxtest",
   "version": "0.0.1",
@@ -45,3 +48,4 @@ MobX 및 Decorator 적용 문제
     "preset": "react-native"
   }
 }
+</code></pre>
